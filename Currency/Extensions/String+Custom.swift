@@ -19,4 +19,16 @@ extension String {
         let end = index(startIndex, offsetBy: bounds.upperBound)
         return String(self[start..<end])
     }
+
+    var numberFromString: Double? {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale.current
+        formatter.numberStyle = .decimal
+        let number = formatter.number(from: self)
+        return number?.doubleValue
+    }
+    
+    var ll: String {
+        return NSLocalizedString(self, comment: "")
+    }
 }

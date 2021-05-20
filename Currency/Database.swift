@@ -25,7 +25,11 @@ import UIKit
 import CoreData
 import MapKit
 
-class Database {
+protocol DatabaseProtocol {
+    func getQuotes() -> [Currency] 
+}
+
+class Database: DatabaseProtocol {
 
     static let shared = Database()
 

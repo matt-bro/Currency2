@@ -6,14 +6,12 @@
 //
 
 import Foundation
-
-import Foundation
 import UIKit
 
-class CurrencyTableViewDataSource<CELL : UITableViewCell,T> : NSObject, UITableViewDataSource {
+class CurrencyListViewDataSource<CELL : UITableViewCell,T> : NSObject, UITableViewDataSource {
 
     private var cellIdentifier : String!
-    private var items : [T]!
+    var items : [T]!
     var configureCell : (CELL, T) -> () = {_,_ in }
 
 

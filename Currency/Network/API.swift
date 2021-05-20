@@ -8,8 +8,11 @@
 import Foundation
 import Combine
 
+protocol APIProtocol {
+    func list(_ database: Database?, _ defaults: UserDefaults?) -> AnyPublisher<CurrencyResponse, Error>
+}
 
-class Network {
+class API: APIProtocol {
     #warning("fix this")
     enum Endpoint: String {
         static let baseUrl = URL(string: "http://api.currencylayer.com/")!
@@ -25,10 +28,10 @@ class Network {
         }
     }
 
-    static let shared = Network()
+    static let shared = API()
     let networkActivityPublisher = PassthroughSubject<Bool, Never>()
 
-    func list() -> AnyPublisher<CurrencyResponse, Error> {
+    func list(_ database: Database? = nil, _ defaults: UserDefaults? = nil) -> AnyPublisher<CurrencyResponse, Error> {
         let url = Endpoint.live.url
         return URLSession.shared.dataTaskPublisher(for: url)
             .delay(for: 3, scheduler: RunLoop.main)
@@ -42,8 +45,8 @@ class Network {
             .map(\.data)
             .decode(type: CurrencyResponse.self, decoder: JSONDecoder())
             .handleEvents(receiveOutput: {
-                Database.shared.saveQuotes(quotes: $0.quotes)
-                UserDefaults.standard.lastMetaDataDate = Date()
+                database?.saveQuotes(quotes: $0.quotes)
+                defaults?.lastMetaDataDate = Date()
             })
             .eraseToAnyPublisher()
     }
