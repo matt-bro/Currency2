@@ -70,6 +70,13 @@ class ViewController: UIViewController {
 
         }).store(in: &subscriptions)
     }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "CurrencySelectionTVC" {
+            let vc = segue.destination as! CurrencySelectionTVC
+            vc.viewModel.$selectedCurrency.map({$0 ?? ""}).assign(to: \.currency, on: self.viewModel).store(in: &subscriptions)
+        }
+    }
 }
 
 extension ViewController: UITextFieldDelegate {

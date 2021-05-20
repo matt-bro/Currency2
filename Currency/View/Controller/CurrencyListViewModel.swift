@@ -15,6 +15,7 @@ final class CurrencyViewModel {
     struct Input {
         let amountValueText: AnyPublisher<String, Never>
         let selectedCountry: UIControl.EventPublisher
+        let selectedCurrency = PassthroughSubject<String, Never>()
     }
 
     struct Output {
@@ -32,6 +33,8 @@ final class CurrencyViewModel {
 
     @Published var quotes: [Currency] = []
     @Published var amount: Double = 1
+    @Published var currency: String = "USD"
+    @Published var quote: Double = 1
     
     init(dependencies: Dependencies) {
         self.dependencies = dependencies
@@ -57,9 +60,9 @@ final class CurrencyViewModel {
             })
             .eraseToAnyPublisher()
 
-        let quotes = self.$amount.combineLatest($quotes).map({ amount, quotes in
+        let quotes = Publishers.CombineLatest3($amount, $quotes, $quote).map({ amount, quotes, quote in
             quotes.map({
-                QuoteCellViewModel(code: $0.id ?? "", title: $0.country, image: $0.image, value: $0.value * amount, sign: $0.sign)
+                QuoteCellViewModel(code: $0.id ?? "", title: $0.country, image: $0.image, value: $0.value * Converter.toUSD(amount: amount, quote: quote), sign: $0.sign)
             })
         }).eraseToAnyPublisher()
 
@@ -68,6 +71,16 @@ final class CurrencyViewModel {
         self.$amount.sink(receiveValue: {
             print("Amount: \($0)")
         }).store(in: &subscriptions)
+
+        self.$currency.sink(receiveValue: { value in
+            self.quote = self.quotes.filter({
+                        quote in quote.country! == value
+
+            }).first?.value ?? 1
+        }).store(in: &subscriptions)
+
+
+        input.selectedCurrency.assign(to: \.currency, on: self).store(in: &subscriptions)
 
 //        apiNetworkActivitySubscriber = API.shared.networkActivityPublisher
 //                    .receive(on: RunLoop.main)
