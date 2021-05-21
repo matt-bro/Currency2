@@ -97,6 +97,7 @@
                 <outlet property="iconIV" destination="P9s-TQ-fOl" id="CrO-qU-1dG"/>
                 <outlet property="titleLabel" destination="LZa-u9-DMc" id="zPx-HU-uWc"/>
                 <outlet property="valueLabel" destination="aih-Jp-QZ4" id="A7P-zP-9P2"/>
+                <outlet property="valueLabelContainer" destination="Gjg-tt-NS9" id="ENF-np-pcl"/>
             </connections>
             <point key="canvasLocation" x="235.50724637681162" y="109.15178571428571"/>
         </tableViewCell>

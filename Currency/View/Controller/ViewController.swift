@@ -26,10 +26,9 @@ class ViewController: UIViewController {
     private let appear = PassthroughSubject<Void, Never>()
     private let pressedCurrencySelection = PassthroughSubject<Void, Never>()
 
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Currency".ll
+        self.title = "main.title".ll
         bindViewModel()
         setupTableView()
     }
@@ -47,21 +46,25 @@ class ViewController: UIViewController {
             cell.viewModel = vm
         })
         self.tableView.dataSource = dataSource
+
+        self.tableView.refreshControl = UIRefreshControl()
+        self.tableView.refreshControl?.addTarget(self, action:
+                                          #selector(handleRefreshControl),
+                                          for: .valueChanged)
     }
 
-    func bindViewModel() {
-        self.selectCurrencyBtn.tapPublisher.sink(receiveValue: { [unowned self] _ in
-            self.performSegue(withIdentifier: "CurrencySelectionTVC", sender: nil)
-        }).store(in: &subscriptions)
 
+
+    func bindViewModel() {
         let output = self.viewModel.transform(input: CurrencyViewModel.Input(amountValueText: self.inputTf.textPublisher(), selectedCountry: self.selectCurrencyBtn.tapPublisher))
 
+        //mark the textfield for invalid input
         output.isInputValid.sink(receiveValue: { isValid in
-            //if isValid { self.tableView.reloadData() }
-            self.inputTf.backgroundColor = isValid ? .white : .systemRed
+            self.inputTf.backgroundColor = isValid ? .systemBackground : .systemRed
         }).store(in: &subscriptions)
 
-
+        //by changing paremeters like selected currency, network update, input
+        //we reload our tableview with fresh quotes
         output.quotes
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: {
@@ -69,13 +72,40 @@ class ViewController: UIViewController {
                 self.tableView.reloadData()
 
         }).store(in: &subscriptions)
+
+        //change the image an text of the currency selection button
+        output.currencySelection.sink(receiveValue: { code, imgData in
+            self.selectedCurrencyLabel.text = code
+            if let imgData = imgData {
+                self.selectedCurrencyImage.image = UIImage(data: imgData)
+            }
+        }).store(in: &subscriptions)
+
+        //Currency btn press leads to selection screen
+        self.selectCurrencyBtn.tapPublisher.sink(receiveValue: { [unowned self] _ in
+            self.performSegue(withIdentifier: "CurrencySelectionTVC", sender: nil)
+        }).store(in: &subscriptions)
+
+        output.metdataText.assign(to: \.text!, on: dateLabel).store(in: &subscriptions)
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "CurrencySelectionTVC" {
-            let vc = segue.destination as! CurrencySelectionTVC
-            vc.viewModel.$selectedCurrency.map({$0 ?? ""}).assign(to: \.currency, on: self.viewModel).store(in: &subscriptions)
+            if let nvc = segue.destination as? UINavigationController,
+               let vc = nvc.viewControllers.first as? CurrencySelectionTVC {
+                vc.viewModel.$selectedCurrency.map({$0 ?? ""}).assign(to: \.currency, on: self.viewModel).store(in: &subscriptions)
+            }
+
         }
+    }
+
+    @objc func handleRefreshControl() {
+       // Update your content…
+
+       // Dismiss the refresh control.
+       DispatchQueue.main.async {
+        self.tableView.refreshControl?.endRefreshing()
+       }
     }
 }
 
@@ -85,14 +115,6 @@ extension ViewController: UITextFieldDelegate {
             let allowedCharacters = CharacterSet(charactersIn:".,0123456789 ")
             let characterSet = CharacterSet(charactersIn: string)
             return allowedCharacters.isSuperset(of: characterSet)
-        }
-        return true
-    }
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let _ = InputConverter.numberFromString(string: textField.text) {
-            //store.amount = amount
-            textField.resignFirstResponder()
-            self.tableView.reloadData()
         }
         return true
     }

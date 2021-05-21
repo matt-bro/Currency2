@@ -9,10 +9,10 @@ import UIKit
 
 class CurrencyTableViewCell: UITableViewCell {
     
-    @IBOutlet var titleLabel: UILabel!
-    @IBOutlet var subtitleLabel: UILabel!
-    @IBOutlet var valueLabel: UILabel!
-    @IBOutlet var iconIV: UIImageView!
+    @IBOutlet var titleLabel: UILabel?
+    @IBOutlet var valueLabel: UILabel?
+    @IBOutlet var valueLabelContainer: CardView?
+    @IBOutlet var iconIV: UIImageView?
 
     static let identifier = "CurrencyTableViewCell"
 
@@ -32,9 +32,9 @@ class CurrencyTableViewCell: UITableViewCell {
     }
 
     func setupViewModel() {
-        self.titleLabel.text = viewModel?.title
-        self.valueLabel.text = viewModel?.amount
-        self.iconIV.image = viewModel?.image
+        self.titleLabel?.text = viewModel?.title
+        self.valueLabel?.text = viewModel?.amount
+        self.iconIV?.image = viewModel?.image
     }
 }
 //

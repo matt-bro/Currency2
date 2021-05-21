@@ -13,10 +13,17 @@ class CurrencySelectionTVC: UITableViewController {
     var dataSource: CurrencyListViewDataSource<CurrencyTableViewCell, QuoteCellViewModel>?
     let viewModel = CurrencySelectionTVCViewModel(dependencies: CurrencySelectionTVCViewModel.Dependencies(db: Database.shared))
 
+    @IBOutlet weak var cancelBtn: UIBarButtonItem?
+
+    private let cancel = PassthroughSubject<Void, Never>()
     var subscriptions = [AnyCancellable]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        self.title = "selection.title".ll
+        self.cancelBtn?.title = "cancel".ll
+
         setupTableView()
         bindViewModel()
     }
@@ -25,7 +32,8 @@ class CurrencySelectionTVC: UITableViewController {
         self.dataSource = CurrencyListViewDataSource<CurrencyTableViewCell, QuoteCellViewModel>
             .init(cellIdentifier: CurrencyTableViewCell.identifier, items: [], configureCell: { cell, vm in
                 cell.viewModel = vm
-                cell.valueLabel.isHidden = true
+                //we can reuse the existing cell, we just hide the value
+                cell.valueLabelContainer?.isHidden = true
                 cell.accessoryType = .disclosureIndicator
         })
         self.tableView.dataSource = dataSource
@@ -35,7 +43,14 @@ class CurrencySelectionTVC: UITableViewController {
     }
 
     func bindViewModel() {
-        let output = viewModel.transform()
+        let input = CurrencySelectionTVCViewModel.Input(pressedCancel: cancel)
+
+        let output = viewModel.transform(input: input)
+
+        output.pressedCancel.sink(receiveValue: { [unowned self] in
+            self.dismiss(animated: true, completion: nil)
+        }).store(in: &subscriptions)
+
         self.dataSource?.items = output.quotes
         self.tableView.reloadData()
     }
@@ -46,33 +61,9 @@ class CurrencySelectionTVC: UITableViewController {
             self.dismiss(animated: true, completion: nil)
         }
     }
-}
 
-final class CurrencySelectionTVCViewModel {
-
-    @Published var selectedCurrency: String? = nil
-
-    struct Dependencies {
-        let db: DatabaseProtocol
-    }
-    struct Output {
-        let quotes: [QuoteCellViewModel]
-    }
-
-    private let dependencies: Dependencies
-
-    init(dependencies: Dependencies) {
-        self.dependencies = dependencies
-    }
-
-    func transform() -> Output {
-        let quotes = dependencies.db.getQuotes().map({
-            QuoteCellViewModel(code: $0.id ?? "", title: $0.country, image: $0.image, value: $0.value, sign: $0.sign)
-        })
-        return Output(quotes: quotes)
-    }
-
-    func didSelectCurrency(code: String) {
-        selectedCurrency = code
+    @IBAction func pressedCancel() {
+        self.cancel.send()
     }
 }
+
