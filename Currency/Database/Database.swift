@@ -25,11 +25,15 @@ import UIKit
 import CoreData
 import MapKit
 
-protocol DatabaseProtocol {
+protocol DatabaseReadable {
     func getQuotes() -> [Currency] 
 }
 
-class Database: DatabaseProtocol {
+protocol DatabaseSavable {
+    func saveQuotes(quotes:[String: Double])
+}
+
+class Database: DatabaseReadable, DatabaseSavable {
 
     static let shared = Database()
 
@@ -43,6 +47,7 @@ class Database: DatabaseProtocol {
         do {
             let data = try Data(contentsOf: URL(fileURLWithPath: jsonPath!), options: .mappedIfSafe)
             let jsonResult = try JSONDecoder().decode(CurrencyResponse.self, from: data)
+            UserDefaults.standard.lastMetaDataDate = jsonResult.timestamp
             self.saveQuotes(quotes: jsonResult.quotes)
         } catch {
             // handle error

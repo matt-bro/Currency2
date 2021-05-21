@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class CurrencyListViewDataSource<CELL : UITableViewCell,T> : NSObject, UITableViewDataSource {
+class GenericDataSource<CELL : UITableViewCell,T> : NSObject, UITableViewDataSource {
 
     private var cellIdentifier : String!
     var items : [T]!

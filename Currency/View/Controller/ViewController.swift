@@ -11,9 +11,15 @@ import Combine
 class ViewController: UIViewController {
 
     @IBOutlet var loading: UIActivityIndicatorView!
+    @IBOutlet var loadingContainer: UIView?
+    @IBOutlet var errorContainer: UIView?
+    @IBOutlet var tryAgainBtn: UIButton?
+
+
     @IBOutlet var tableView: UITableView!
     @IBOutlet var inputTf: UITextField!
     @IBOutlet var dateLabel: UILabel!
+
     @IBOutlet var selectedCurrencyLabel: UILabel!
     @IBOutlet var selectCurrencyBtn: UIButton!
     @IBOutlet var selectedCurrencyImage: UIImageView!
@@ -21,10 +27,11 @@ class ViewController: UIViewController {
     var subscriptions = [AnyCancellable]()
 
     var viewModel = CurrencyViewModel(dependencies: CurrencyViewModel.Dependencies(api: API.shared, db: Database.shared))
-    var dataSource: CurrencyListViewDataSource<CurrencyTableViewCell, QuoteCellViewModel>?
+    var dataSource: GenericDataSource<CurrencyTableViewCell, QuoteCellViewModel>?
 
     private let appear = PassthroughSubject<Void, Never>()
     private let pressedCurrencySelection = PassthroughSubject<Void, Never>()
+    private let refresh = PassthroughSubject<Bool, Never>()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,21 +49,16 @@ class ViewController: UIViewController {
         self.tableView.register(UINib(nibName: "CurrencyTableViewCell", bundle: nil), forCellReuseIdentifier: CurrencyTableViewCell.identifier)
         self.tableView.rowHeight = 70.0
 
-        self.dataSource = CurrencyListViewDataSource<CurrencyTableViewCell, QuoteCellViewModel>(cellIdentifier: CurrencyTableViewCell.identifier, items: [], configureCell: { cell, vm in
+        self.dataSource = GenericDataSource<CurrencyTableViewCell, QuoteCellViewModel>(cellIdentifier: CurrencyTableViewCell.identifier, items: [], configureCell: { cell, vm in
             cell.viewModel = vm
         })
         self.tableView.dataSource = dataSource
-
-        self.tableView.refreshControl = UIRefreshControl()
-        self.tableView.refreshControl?.addTarget(self, action:
-                                          #selector(handleRefreshControl),
-                                          for: .valueChanged)
     }
 
 
 
     func bindViewModel() {
-        let output = self.viewModel.transform(input: CurrencyViewModel.Input(amountValueText: self.inputTf.textPublisher(), selectedCountry: self.selectCurrencyBtn.tapPublisher))
+        let output = self.viewModel.transform(input: CurrencyViewModel.Input(amountValueText: self.inputTf.textPublisher(), selectedCountry: self.selectCurrencyBtn.tapPublisher, refresh: refresh))
 
         //mark the textfield for invalid input
         output.isInputValid.sink(receiveValue: { isValid in
@@ -81,10 +83,26 @@ class ViewController: UIViewController {
             }
         }).store(in: &subscriptions)
 
+        output.loadingState.sink(receiveValue: { state in
+            switch state {
+            case .finished:
+                self.loadingContainer?.isHidden = true
+                self.errorContainer?.isHidden = true
+            case .loading:
+                self.loadingContainer?.isHidden = false
+                self.errorContainer?.isHidden = true
+            case .error(let e):
+                print(e.localizedDescription)
+                self.loadingContainer?.isHidden = true
+                self.errorContainer?.isHidden = false
+            }
+        }).store(in: &subscriptions)
+
         //Currency btn press leads to selection screen
         self.selectCurrencyBtn.tapPublisher.sink(receiveValue: { [unowned self] _ in
             self.performSegue(withIdentifier: "CurrencySelectionTVC", sender: nil)
         }).store(in: &subscriptions)
+
 
         output.metdataText.assign(to: \.text!, on: dateLabel).store(in: &subscriptions)
     }
@@ -98,15 +116,6 @@ class ViewController: UIViewController {
 
         }
     }
-
-    @objc func handleRefreshControl() {
-       // Update your content…
-
-       // Dismiss the refresh control.
-       DispatchQueue.main.async {
-        self.tableView.refreshControl?.endRefreshing()
-       }
-    }
 }
 
 extension ViewController: UITextFieldDelegate {
@@ -117,5 +126,11 @@ extension ViewController: UITextFieldDelegate {
             return allowedCharacters.isSuperset(of: characterSet)
         }
         return true
+    }
+}
+
+extension ViewController {
+    @IBAction func pressedRefresh(_ sender: Any) {
+        self.refresh.send(true)
     }
 }

@@ -20,3 +20,9 @@ class InputConverter {
         return number?.doubleValue
     }
 }
+
+class Converter {
+    static func toUSD(amount: Double, quote: Double) -> Double {
+        amount/quote
+    }
+}

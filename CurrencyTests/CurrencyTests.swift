@@ -31,7 +31,7 @@ class CurrencyTests: XCTestCase {
     }
 
     func testStringConversion() throws {
-        let textInput = "10.00"
+        let textInput = "10"
         let target = 10.0
         //let quote = 0.821925
 

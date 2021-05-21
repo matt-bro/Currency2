@@ -13,14 +13,13 @@ final class CurrencySelectionTVCViewModel {
     @Published var selectedCurrency: String? = nil
 
     struct Dependencies {
-        let db: DatabaseProtocol
+        let db: DatabaseReadable
     }
     struct Input {
         let pressedCancel: PassthroughSubject<Void, Never>
     }
     struct Output {
         let quotes: [QuoteCellViewModel]
-        //let closeAction:(()->())
         let pressedCancel: AnyPublisher<(), Never>
     }
 

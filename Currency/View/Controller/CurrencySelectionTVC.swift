@@ -10,7 +10,7 @@ import Combine
 
 class CurrencySelectionTVC: UITableViewController {
 
-    var dataSource: CurrencyListViewDataSource<CurrencyTableViewCell, QuoteCellViewModel>?
+    var dataSource: GenericDataSource<CurrencyTableViewCell, QuoteCellViewModel>?
     let viewModel = CurrencySelectionTVCViewModel(dependencies: CurrencySelectionTVCViewModel.Dependencies(db: Database.shared))
 
     @IBOutlet weak var cancelBtn: UIBarButtonItem?
@@ -29,7 +29,7 @@ class CurrencySelectionTVC: UITableViewController {
     }
 
     func setupTableView() {
-        self.dataSource = CurrencyListViewDataSource<CurrencyTableViewCell, QuoteCellViewModel>
+        self.dataSource = GenericDataSource<CurrencyTableViewCell, QuoteCellViewModel>
             .init(cellIdentifier: CurrencyTableViewCell.identifier, items: [], configureCell: { cell, vm in
                 cell.viewModel = vm
                 //we can reuse the existing cell, we just hide the value

@@ -14,6 +14,7 @@ final class CurrencyViewModel {
         let amountValueText: AnyPublisher<String, Never>
         let selectedCountry: UIControl.EventPublisher
         let selectedCurrency = PassthroughSubject<String, Never>()
+        let refresh: PassthroughSubject<Bool, Never>
     }
 
     struct Output {
@@ -21,11 +22,12 @@ final class CurrencyViewModel {
         let quotes: AnyPublisher<[QuoteCellViewModel], Never>
         let currencySelection: AnyPublisher<(String?, Data?), Never>
         let metdataText: AnyPublisher<String, Never>
+        let loadingState: AnyPublisher<State, Never>
     }
 
     struct Dependencies {
         let api: APIProtocol
-        let db: DatabaseProtocol
+        let db: DatabaseReadable
     }
 
     private var subscriptions = Set<AnyCancellable>()
@@ -36,6 +38,7 @@ final class CurrencyViewModel {
     @Published private var amount: Double = 1
     @Published private var quote: Double = 1
     @Published private var metadataDate: Date?
+    @Published private var loadingState: State = .finished
     @Published var currency: String = "USD"
 
     init(dependencies: Dependencies) {
@@ -96,28 +99,46 @@ final class CurrencyViewModel {
             return (q?.country, q?.image)
         }).eraseToAnyPublisher()
 
-//        apiNetworkActivitySubscriber = api.shared.networkActivityPublisher
-//                    .receive(on: RunLoop.main)
-//                    .sink { doingSomethingNow in
-//                        if (doingSomethingNow) {
-//                            self.loading.startAnimating()
-//                        } else {
-//                            self.loading.stopAnimating()
-//                        }
-//                    }
-
-        self.dependencies.api.list(Database.shared, UserDefaults.standard)
-            .subscribe(on: DispatchQueue.main)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [unowned self] _ in
-                self.quotes = dependencies.db.getQuotes()
-                self.metadataDate = UserDefaults.standard.lastMetaDataDate
-            }).store(in: &subscriptions)
+//        self.dependencies.api.list(Database.shared, UserDefaults.standard)
+//            .subscribe(on: DispatchQueue.main)
+//            .sink(receiveCompletion: { _ in }, receiveValue: { [unowned self] _ in
+//                self.quotes = dependencies.db.getQuotes()
+//                self.metadataDate = UserDefaults.standard.lastMetaDataDate
+//            }).store(in: &subscriptions)
 
 
         let metadataText = $metadataDate.map({
             String("\("currency.data".ll) \($0?.string ?? "")")
         }).eraseToAnyPublisher()
 
-        return Output(isInputValid: isInputValid, quotes: quotes, currencySelection: currencySelection, metdataText: metadataText)
+
+        input.refresh.map({ force -> AnyPublisher<CurrencyResponse, Error>  in
+            self.loadingState = .loading
+            return self.dependencies.api.list(Database.shared, UserDefaults.standard, force)
+        })
+        .switchToLatest()
+        .sink(receiveCompletion: { [weak self] completion in
+            print(completion)
+            switch completion {
+            case .failure(let error): self?.loadingState = .error(error)
+            case .finished: self?.loadingState = .finished
+            }
+        }, receiveValue: { [unowned self] _ in
+            self.quotes = dependencies.db.getQuotes()
+            self.metadataDate = UserDefaults.standard.lastMetaDataDate
+            self.loadingState = .finished
+        }).store(in: &subscriptions)
+
+        input.refresh.send(false)
+
+        let loadingState = $loadingState.eraseToAnyPublisher()
+
+        return Output(isInputValid: isInputValid, quotes: quotes, currencySelection: currencySelection, metdataText: metadataText, loadingState: loadingState)
+    }
+
+    enum State {
+        case loading
+        case finished
+        case error(Error)
     }
 }
