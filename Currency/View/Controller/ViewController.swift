@@ -77,7 +77,9 @@ class ViewController: UIViewController {
 
         //change the image an text of the currency selection button
         output.currencySelection.sink(receiveValue: { code, imgData in
-            self.selectedCurrencyLabel.text = code
+            if let code = code {
+                self.selectedCurrencyLabel.text = code
+            }
             if let imgData = imgData {
                 self.selectedCurrencyImage.image = UIImage(data: imgData)
             }

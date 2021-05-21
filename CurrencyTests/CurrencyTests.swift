@@ -31,24 +31,37 @@ class CurrencyTests: XCTestCase {
     }
 
     func testStringConversion() throws {
-        let textInput = "10"
-        let target = 10.0
-        //let quote = 0.821925
-
-        let convertedVal = InputConverter.numberFromString(string: textInput)
+        var textInput = "10"
+        var target = 10.0
+        var convertedVal = InputConverter.numberFromString(string: textInput)
         XCTAssertNotNil(convertedVal)
         XCTAssert(target == convertedVal!)
+
+        convertedVal = InputConverter.numberFromString(string: textInput)
+        textInput = "3487"
+        target = 3487
+        XCTAssertNotNil(convertedVal)
+        XCTAssert(target == convertedVal!)
+
+        let weirdInput = ",,,213.."
+        XCTAssertNil(InputConverter.numberFromString(string: weirdInput))
+
+        let noInput:String? = nil
+        XCTAssertNil(InputConverter.numberFromString(string: noInput))
     }
 
     func testQuoteConversion() throws {
         let amount = 10.0
         let eurQuote = 0.821925
         let result1 = Converter.toUSD(amount: amount, quote: eurQuote)
-        XCTAssert(result1 == 12.16656)
+        XCTAssert(result1 >= 12)
 
         let jpyQuote = 109.13502
-        let result2 = jpyQuote*result1
-        XCTAssert(result2 == 1327.7978)
+        let result2 = Converter.fromUSDToOther(amount: result1, targetQuote: jpyQuote)
+        XCTAssert(result2 >= 1327)
+
+        let result3 = Converter.toUSD(amount: 50, quote: 0)
+        XCTAssert(result3 == 0)
 
     }
 

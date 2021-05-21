@@ -12,7 +12,7 @@ protocol APIProtocol {
     func list(_ database: DatabaseSavable?, _ defaults: UserDefaults?, _ force: Bool) -> AnyPublisher<CurrencyResponse, Error>
 }
 
-enum ServiceError: Error {
+enum ServiceError: Error, Equatable {
     case url(URLError)
     case urlRequest
     case decode
@@ -21,18 +21,17 @@ enum ServiceError: Error {
 }
 
 class API: APIProtocol {
-    #warning("fix this")
     enum Endpoint: String {
-        static let baseUrl = URL(string: "http://api.currencylayer.com/")!
-        private static let accessKey = "access_key=6c16635ecdf56ac38045dded167ee369"
-        case live = "http://api.currencylayer.com/live"
+        private static let baseUrl = URL(string: "http://api.currencylayer.com/")!
+        private static let accessKey = "6c16635ecdf56ac38045dded167ee369"
+
+        case live = "live"
 
         var url: URL {
-                    switch self {
-                    case .live:
-                        return URL(string:"\(Endpoint.baseUrl.absoluteString)live?\(Endpoint.accessKey)")!
-
-                }
+            switch self {
+            case .live:
+                return Endpoint.baseUrl.appendingPathComponent(self.rawValue).appendAccesKey(key: Endpoint.accessKey)
+            }
         }
     }
 
@@ -44,10 +43,9 @@ class API: APIProtocol {
         //check if we are allowed to query
         //is the last update older than 30 min? then don't update
         //if the user pressed refresh then ignore the timing
-        if let shouldUpdate = defaults?.shouldUpdateMetaData(), shouldUpdate == false {
+        if let shouldUpdate = defaults?.shouldUpdateMetaData(), shouldUpdate == false, force == false {
             return Fail(error: ServiceError.tooEarly).eraseToAnyPublisher()
         }
-
 
         let url = Endpoint.live.url
         return URLSession.shared.dataTaskPublisher(for: url)
@@ -73,3 +71,4 @@ class API: APIProtocol {
             .eraseToAnyPublisher()
     }
 }
+

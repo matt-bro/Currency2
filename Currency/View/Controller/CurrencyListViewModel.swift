@@ -120,7 +120,12 @@ final class CurrencyViewModel {
         .sink(receiveCompletion: { [weak self] completion in
             print(completion)
             switch completion {
-            case .failure(let error): self?.loadingState = .error(error)
+            case .failure(let error):
+                if let tooEarly = error as? ServiceError {
+                    self?.loadingState = (tooEarly == .tooEarly) ? .finished : .error(error)
+                } else {
+                    self?.loadingState = .error(error)
+                }
             case .finished: self?.loadingState = .finished
             }
         }, receiveValue: { [unowned self] _ in
@@ -129,7 +134,7 @@ final class CurrencyViewModel {
             self.loadingState = .finished
         }).store(in: &subscriptions)
 
-        input.refresh.send(false)
+        //input.refresh.send(false)
 
         let loadingState = $loadingState.eraseToAnyPublisher()
 
