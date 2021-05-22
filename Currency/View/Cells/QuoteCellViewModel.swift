@@ -4,8 +4,6 @@
 //
 //  Created by Matt on 20.05.21.
 //
-
-import Foundation
 import UIKit
 
 final class QuoteCellViewModel {

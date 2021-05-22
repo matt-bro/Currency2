@@ -24,7 +24,6 @@ class QuoteCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -37,12 +36,3 @@ class QuoteCell: UITableViewCell {
         self.iconIV?.image = viewModel?.image
     }
 }
-//
-//class CurrencySelectionTableViewCell: CurrencyTableViewCell {
-//    override func awakeFromNib() {
-//        super.awakeFromNib()
-//        // Initialization code
-//        self.valueLabel.isHidden = true
-//        self.accessoryType = .disclosureIndicator
-//    }
-//}

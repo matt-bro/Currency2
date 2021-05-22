@@ -37,7 +37,7 @@ class Database: DatabaseReadable, DatabaseSavable {
     static let shared = Database()
 
     func inititalSetup() {
-        let  jsonPath = Bundle.main.path(forResource: "live", ofType: "json")
+        let  jsonPath = Bundle.main.path(forResource: "initial-data", ofType: "json")
 
         guard self.getQuotes().isEmpty else {
             return

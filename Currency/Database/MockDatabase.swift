@@ -16,7 +16,7 @@ class MockDatabase: DatabaseReadable, DatabaseSavable {
     static let shared = MockDatabase()
 
     func inititalSetup() {
-        let  jsonPath = Bundle.main.path(forResource: "live", ofType: "json")
+        let  jsonPath = Bundle.main.path(forResource: "initial-data", ofType: "json")
 
         guard self.getQuotes().isEmpty else {
             return

@@ -19,7 +19,6 @@
 		C9328ECC2655026A006A1199 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328ECB2655026A006A1199 /* API.swift */; };
 		C9328ED526550AA2006A1199 /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328ED426550AA2006A1199 /* Response.swift */; };
 		C9328EDB26552CD5006A1199 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328EDA26552CD5006A1199 /* CardView.swift */; };
-		C9328EEB26555145006A1199 /* live.json in Resources */ = {isa = PBXBuildFile; fileRef = C9328EEA26555145006A1199 /* live.json */; };
 		C9328EF02655521D006A1199 /* GenericDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328EEF2655521D006A1199 /* GenericDataSource.swift */; };
 		C9328EF52655532A006A1199 /* CurrencyListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328EF42655532A006A1199 /* CurrencyListViewModel.swift */; };
 		C9328EFA2655537F006A1199 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328EF92655537F006A1199 /* Database.swift */; };
@@ -40,6 +39,7 @@
 		C9FE70682659033400706C0A /* UI+Localizable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FE70672659033400706C0A /* UI+Localizable.swift */; };
 		C9FE7074265905E100706C0A /* MockDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FE7073265905E100706C0A /* MockDatabase.swift */; };
 		C9FE707C265906CD00706C0A /* MockAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FE707B265906CD00706C0A /* MockAPI.swift */; };
+		C9FE708426597AE600706C0A /* initial-data.json in Resources */ = {isa = PBXBuildFile; fileRef = C9FE708326597AE600706C0A /* initial-data.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,7 +78,6 @@
 		C9328ECB2655026A006A1199 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		C9328ED426550AA2006A1199 /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
 		C9328EDA26552CD5006A1199 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
-		C9328EEA26555145006A1199 /* live.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = live.json; path = ../../../../../Downloads/Paypay/live.json; sourceTree = "<group>"; };
 		C9328EEF2655521D006A1199 /* GenericDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericDataSource.swift; sourceTree = "<group>"; };
 		C9328EF42655532A006A1199 /* CurrencyListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyListViewModel.swift; sourceTree = "<group>"; };
 		C9328EF92655537F006A1199 /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
@@ -101,6 +100,7 @@
 		C9FE70672659033400706C0A /* UI+Localizable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UI+Localizable.swift"; sourceTree = "<group>"; };
 		C9FE7073265905E100706C0A /* MockDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDatabase.swift; sourceTree = "<group>"; };
 		C9FE707B265906CD00706C0A /* MockAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAPI.swift; sourceTree = "<group>"; };
+		C9FE708326597AE600706C0A /* initial-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "initial-data.json"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -214,7 +214,7 @@
 		C9328EE9265550EB006A1199 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				C9328EEA26555145006A1199 /* live.json */,
+				C9FE708326597AE600706C0A /* initial-data.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -240,6 +240,7 @@
 		C9F353BB2656C9ED00D4A996 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				C9FE708B26597B9E00706C0A /* ViewModel */,
 				C9F353BD2656CA1400D4A996 /* Cells */,
 				C9F353BC2656C9FB00D4A996 /* Controller */,
 			);
@@ -250,10 +251,7 @@
 			isa = PBXGroup;
 			children = (
 				C9328E9926550244006A1199 /* CurrencyListVC.swift */,
-				C9328EF42655532A006A1199 /* CurrencyListViewModel.swift */,
-				C9F353E32658050200D4A996 /* CurrencyListVCViewModelTests.swift */,
 				C9F353D52656F73200D4A996 /* CurrencySelectionTVC.swift */,
-				C9F3540A2658072800D4A996 /* CurrencySelectionTVCViewModel.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -283,6 +281,16 @@
 				C9328F1426556BC7006A1199 /* InputConverter.swift */,
 			);
 			path = Shared;
+			sourceTree = "<group>";
+		};
+		C9FE708B26597B9E00706C0A /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				C9328EF42655532A006A1199 /* CurrencyListViewModel.swift */,
+				C9F353E32658050200D4A996 /* CurrencyListVCViewModelTests.swift */,
+				C9F3540A2658072800D4A996 /* CurrencySelectionTVCViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -393,8 +401,8 @@
 			files = (
 				C9328EA526550245006A1199 /* LaunchScreen.storyboard in Resources */,
 				C9F35401265805BA00D4A996 /* Localizable.strings in Resources */,
+				C9FE708426597AE600706C0A /* initial-data.json in Resources */,
 				C9328F0126555681006A1199 /* CurrencyTableViewCell.xib in Resources */,
-				C9328EEB26555145006A1199 /* live.json in Resources */,
 				C9328EA226550245006A1199 /* Assets.xcassets in Resources */,
 				C9328E9D26550244006A1199 /* Main.storyboard in Resources */,
 			);
@@ -631,6 +639,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 73C2KZC994;
 				INFOPLIST_FILE = Currency/Info.plist;
@@ -650,6 +659,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 73C2KZC994;
 				INFOPLIST_FILE = Currency/Info.plist;

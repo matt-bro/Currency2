@@ -53,8 +53,6 @@ class CurrencyListVC: UIViewController {
         self.tableView.dataSource = dataSource
     }
 
-
-
     func bindViewModel() {
         let output = self.viewModel.transform(input: CurrencyListVCViewModel.Input(amountValueText: self.inputTf.textPublisher(), selectedCountry: self.selectCurrencyBtn.tapPublisher, refresh: refresh))
 
@@ -113,7 +111,6 @@ class CurrencyListVC: UIViewController {
                let vc = nvc.viewControllers.first as? CurrencySelectionTVC {
                 vc.viewModel.$selectedCurrency.map({$0 ?? ""}).assign(to: \.currency, on: self.viewModel).store(in: &subscriptions)
             }
-
         }
     }
 }

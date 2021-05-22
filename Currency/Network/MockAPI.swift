@@ -10,7 +10,7 @@ import Combine
 
 class MockAPI: APIProtocol {
     func list(_ database: DatabaseSavable?, _ defaults: UserDefaults?, _ force: Bool) -> AnyPublisher<CurrencyResponse, Error> {
-        let  jsonPath = Bundle.main.path(forResource: "live", ofType: "json")
+        let  jsonPath = Bundle.main.path(forResource: "initial-data", ofType: "json")
 
         do {
             let decoder = JSONDecoder()
