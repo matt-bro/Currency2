@@ -8,7 +8,7 @@
 import UIKit
 
 class QuoteCell: UITableViewCell {
-    
+
     @IBOutlet var titleLabel: UILabel?
     @IBOutlet var valueLabel: UILabel?
     @IBOutlet var valueLabelContainer: CardView?
@@ -21,7 +21,7 @@ class QuoteCell: UITableViewCell {
             setupViewModel()
         }
     }
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
     }

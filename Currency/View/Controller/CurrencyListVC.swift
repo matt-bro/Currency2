@@ -27,7 +27,7 @@ class CurrencyListVC: UIViewController {
     @IBOutlet var selectedCurrencyLabel: UILabel!
     @IBOutlet var selectCurrencyBtn: UIButton!
     @IBOutlet var selectedCurrencyImage: UIImageView!
-    
+
     var subscriptions = [AnyCancellable]()
 
     private let appear = PassthroughSubject<Void, Never>()
@@ -110,7 +110,6 @@ class CurrencyListVC: UIViewController {
             self.performSegue(withIdentifier: "CurrencySelectionTVC", sender: nil)
         }).store(in: &subscriptions)
 
-
         //show our current datas date
         output.metdataText.assign(to: \.text!, on: dateLabel).store(in: &subscriptions)
     }
@@ -130,7 +129,7 @@ extension CurrencyListVC: UITextFieldDelegate {
     //we want to limit the input options for our textfield to only numbers and ,.
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if textField == inputTf {
-            let allowedCharacters = CharacterSet(charactersIn:".,0123456789 ")
+            let allowedCharacters = CharacterSet(charactersIn: ".,0123456789 ")
             let characterSet = CharacterSet(charactersIn: string)
             return allowedCharacters.isSuperset(of: characterSet)
         }

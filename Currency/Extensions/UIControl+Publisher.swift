@@ -67,7 +67,7 @@ private extension UIControl {
             // Whenever an event was triggered by the underlying
             // UIControl instance, we'll simply pass Void to our
             // target to emit that event:
-            let _ = target?.receive(())
+            _ = target?.receive(())
         }
     }
 }

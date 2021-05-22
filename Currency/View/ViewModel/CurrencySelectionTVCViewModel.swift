@@ -10,7 +10,7 @@ import Combine
 
 final class CurrencySelectionTVCViewModel {
 
-    @Published var selectedCurrency: String? = nil
+    @Published var selectedCurrency: String?
 
     struct Dependencies {
         let db: DatabaseReadable

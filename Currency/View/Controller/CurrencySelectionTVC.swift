@@ -67,4 +67,3 @@ class CurrencySelectionTVC: UITableViewController {
         self.cancel.send()
     }
 }
-

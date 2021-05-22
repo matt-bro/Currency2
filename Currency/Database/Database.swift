@@ -25,11 +25,11 @@ import UIKit
 import CoreData
 
 protocol DatabaseReadable {
-    func getQuotes() -> [Currency] 
+    func getQuotes() -> [Currency]
 }
 
 protocol DatabaseSavable {
-    func saveQuotes(quotes:[String: Double])
+    func saveQuotes(quotes: [String: Double])
 }
 
 class Database: DatabaseReadable, DatabaseSavable {
@@ -57,7 +57,7 @@ class Database: DatabaseReadable, DatabaseSavable {
     }
 
     ///Save our quotes to database
-    func saveQuotes(quotes:[String: Double]) {
+    func saveQuotes(quotes: [String: Double]) {
         //I don't want to check for update/insert so I delete all entries before
         self.deleteAllQuotes()
 
@@ -68,7 +68,7 @@ class Database: DatabaseReadable, DatabaseSavable {
             e.code = quote.key
 
             //the quote key seems to be in format e.g. USDUSD, USDEUR
-            //i assume I can cut the first 3 characters to get the clean currency code
+            //I assume I can cut the first 3 characters to get the clean currency code
             if quote.key.count >= 6 {
                 e.country = quote.key[3...5]
             } else {
@@ -90,8 +90,7 @@ class Database: DatabaseReadable, DatabaseSavable {
         do {
             try context.execute(deleteRequest)
             try context.save()
-        }
-        catch {
+        } catch {
             print ("There was an error")
         }
     }
@@ -138,7 +137,7 @@ class Database: DatabaseReadable, DatabaseSavable {
          error conditions that could cause the creation of the store to fail.
          */
         let container = NSPersistentContainer(name: "Currency")
-        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+        container.loadPersistentStores(completionHandler: { (_, error) in
             container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
             if let error = error as NSError? {
                 // Replace this implementation with code to handle the error appropriately.

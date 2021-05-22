@@ -15,4 +15,3 @@ struct CurrencyResponse: Decodable {
     var source: String
     var quotes: [String: Double] = [:]
 }
-

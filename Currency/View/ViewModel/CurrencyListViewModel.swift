@@ -87,7 +87,7 @@ final class CurrencyListVCViewModel {
         //any change in amount, quote or the quotes array will lead to a recalculation
         let quotes = Publishers.CombineLatest3($amount, $quotes, $quote).map({ amount, quotes, quote in
             quotes.map({
-                QuoteCellViewModel(code: $0.id ?? "", title: $0.country, image: $0.image, value: Converter.fromUSDToOther(amount: Converter.toUSD(amount: amount, quote: quote), targetQuote: $0.value) , sign: $0.sign)
+                QuoteCellViewModel(code: $0.id ?? "", title: $0.country, image: $0.image, value: Converter.fromUSDToOther(amount: Converter.toUSD(amount: amount, quote: quote), targetQuote: $0.value), sign: $0.sign)
             })
         }).eraseToAnyPublisher()
 

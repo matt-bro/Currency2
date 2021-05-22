@@ -5,11 +5,9 @@
 //  Created by Matt on 22.05.21.
 //
 
-
 import Foundation
 import UIKit
 import CoreData
-
 
 class MockDatabase: DatabaseReadable, DatabaseSavable {
 
@@ -34,7 +32,7 @@ class MockDatabase: DatabaseReadable, DatabaseSavable {
         }
     }
 
-    func saveQuotes(quotes:[String: Double]) {
+    func saveQuotes(quotes: [String: Double]) {
 
     }
 
@@ -58,7 +56,7 @@ class MockDatabase: DatabaseReadable, DatabaseSavable {
 
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "Currency")
-        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+        container.loadPersistentStores(completionHandler: { (_, error) in
             container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")

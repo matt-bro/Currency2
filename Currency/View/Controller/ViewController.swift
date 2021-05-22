@@ -22,7 +22,7 @@ class CurrencyListVC: UIViewController {
     @IBOutlet var selectedCurrencyLabel: UILabel!
     @IBOutlet var selectCurrencyBtn: UIButton!
     @IBOutlet var selectedCurrencyImage: UIImageView!
-    
+
     var subscriptions = [AnyCancellable]()
     private let appear = PassthroughSubject<Void, Never>()
     private let pressedCurrencySelection = PassthroughSubject<Void, Never>()
@@ -52,8 +52,6 @@ class CurrencyListVC: UIViewController {
         })
         self.tableView.dataSource = dataSource
     }
-
-
 
     func bindViewModel() {
         let output = self.viewModel.transform(input: CurrencyViewModel.Input(amountValueText: self.inputTf.textPublisher(), selectedCountry: self.selectCurrencyBtn.tapPublisher, refresh: refresh))
@@ -103,7 +101,6 @@ class CurrencyListVC: UIViewController {
             self.performSegue(withIdentifier: "CurrencySelectionTVC", sender: nil)
         }).store(in: &subscriptions)
 
-
         output.metdataText.assign(to: \.text!, on: dateLabel).store(in: &subscriptions)
     }
 
@@ -121,7 +118,7 @@ class CurrencyListVC: UIViewController {
 extension CurrencyListVC: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if textField == inputTf {
-            let allowedCharacters = CharacterSet(charactersIn:".,0123456789 ")
+            let allowedCharacters = CharacterSet(charactersIn: ".,0123456789 ")
             let characterSet = CharacterSet(charactersIn: string)
             return allowedCharacters.isSuperset(of: characterSet)
         }

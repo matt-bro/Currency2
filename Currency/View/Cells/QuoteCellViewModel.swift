@@ -24,7 +24,7 @@ final class QuoteCellViewModel {
         return "\(sign ?? "") \(String(format: "%.02f", value))"
     }
 
-    init(code: String, title:String?, image: Data?, value:Double, sign: String?) {
+    init(code: String, title: String?, image: Data?, value: Double, sign: String?) {
         self.code = code
         self.title = title
         if let data = image {

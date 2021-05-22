@@ -8,7 +8,6 @@
 import Foundation
 import Combine
 
-
 protocol APIProtocol {
     func list(_ database: DatabaseSavable?, _ defaults: UserDefaults?, _ force: Bool) -> AnyPublisher<CurrencyResponse, Error>
 }
@@ -94,4 +93,3 @@ class API: APIProtocol {
             .eraseToAnyPublisher()
     }
 }
-

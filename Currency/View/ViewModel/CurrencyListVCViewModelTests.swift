@@ -12,14 +12,13 @@ import Combine
 @testable import Currency
 
 class CurrencyListVCViewModelTests: XCTestCase {
-    
+
     private var cancellables: Set<AnyCancellable>!
 
     var textInputPublisher: AnyPublisher<String, Never> {
         textSubject.eraseToAnyPublisher()
     }
     private let textSubject = PassthroughSubject<String, Never>()
-
 
     override func setUp() {
         super.setUp()
@@ -40,7 +39,6 @@ class CurrencyListVCViewModelTests: XCTestCase {
             refreshSuccess.fulfill()
         }).store(in: &cancellables)
 
-
         let validInput = self.expectation(description: "valid text input")
         output.isInputValid.sink(receiveValue: { isValid in
             XCTAssertTrue(isValid)
@@ -50,6 +48,5 @@ class CurrencyListVCViewModelTests: XCTestCase {
 
         wait(for: [refreshSuccess, validInput], timeout: 10.0)
     }
-
 
 }
