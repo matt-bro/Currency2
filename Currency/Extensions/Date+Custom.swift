@@ -8,6 +8,8 @@
 import Foundation
 
 extension Date {
+
+    ///Standard formatter for our date in locale long format
     var string: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .long

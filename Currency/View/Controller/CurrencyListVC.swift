@@ -10,22 +10,30 @@ import Combine
 
 class CurrencyListVC: UIViewController {
 
+    // Outlets for our state container for error and loading
+    //loading
     @IBOutlet var loading: UIActivityIndicatorView!
     @IBOutlet var loadingContainer: UIView?
+    //error
     @IBOutlet var errorContainer: UIView?
     @IBOutlet var tryAgainBtn: UIButton?
+    //last update label
+    @IBOutlet var dateLabel: UILabel!
 
     @IBOutlet var tableView: UITableView!
     @IBOutlet var inputTf: UITextField!
-    @IBOutlet var dateLabel: UILabel!
 
+    //Outlets for currency selection button
     @IBOutlet var selectedCurrencyLabel: UILabel!
     @IBOutlet var selectCurrencyBtn: UIButton!
     @IBOutlet var selectedCurrencyImage: UIImageView!
     
     var subscriptions = [AnyCancellable]()
+
     private let appear = PassthroughSubject<Void, Never>()
+    //use to inform vm that selection happened
     private let pressedCurrencySelection = PassthroughSubject<Void, Never>()
+    //use to inform vm for refreshing data
     private let refresh = PassthroughSubject<Bool, Never>()
 
     var viewModel = CurrencyListVCViewModel(dependencies: CurrencyListVCViewModel.Dependencies(api: API.shared, db: Database.shared))
@@ -54,7 +62,7 @@ class CurrencyListVC: UIViewController {
     }
 
     func bindViewModel() {
-        let output = self.viewModel.transform(input: CurrencyListVCViewModel.Input(amountValueText: self.inputTf.textPublisher(), selectedCountry: self.selectCurrencyBtn.tapPublisher, refresh: refresh))
+        let output = self.viewModel.transform(input: CurrencyListVCViewModel.Input(amountValueText: self.inputTf.textPublisher(), refresh: refresh))
 
         //mark the textfield for invalid input
         output.isInputValid.sink(receiveValue: { isValid in
@@ -81,6 +89,7 @@ class CurrencyListVC: UIViewController {
             }
         }).store(in: &subscriptions)
 
+        //Dependend on our network state we will show loading, error or just nothing
         output.loadingState.sink(receiveValue: { state in
             switch state {
             case .finished:
@@ -102,6 +111,7 @@ class CurrencyListVC: UIViewController {
         }).store(in: &subscriptions)
 
 
+        //show our current datas date
         output.metdataText.assign(to: \.text!, on: dateLabel).store(in: &subscriptions)
     }
 
@@ -116,6 +126,8 @@ class CurrencyListVC: UIViewController {
 }
 
 extension CurrencyListVC: UITextFieldDelegate {
+
+    //we want to limit the input options for our textfield to only numbers and ,.
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if textField == inputTf {
             let allowedCharacters = CharacterSet(charactersIn:".,0123456789 ")
@@ -127,6 +139,7 @@ extension CurrencyListVC: UITextFieldDelegate {
 }
 
 extension CurrencyListVC {
+    //pressing refresh triggers our publisher
     @IBAction func pressedRefresh(_ sender: Any) {
         self.refresh.send(true)
     }

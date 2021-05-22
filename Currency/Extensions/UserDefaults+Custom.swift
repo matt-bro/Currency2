@@ -8,6 +8,8 @@
 import Foundation
 
 extension UserDefaults {
+
+    ///Tells us about the last quotes update date
     var lastMetaDataDate: Date? {
         get {
             return UserDefaults.standard.object(forKey: "lastMetaDataDate") as? Date
@@ -17,6 +19,7 @@ extension UserDefaults {
         }
     }
 
+    ///Did already more than 30 min pass since last update?
     func shouldUpdateMetaData() -> Bool {
         guard let metaDataDate = lastMetaDataDate else {
             return true

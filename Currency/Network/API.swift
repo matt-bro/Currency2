@@ -8,10 +8,12 @@
 import Foundation
 import Combine
 
+
 protocol APIProtocol {
     func list(_ database: DatabaseSavable?, _ defaults: UserDefaults?, _ force: Bool) -> AnyPublisher<CurrencyResponse, Error>
 }
 
+// We handle any network errors with this enum
 enum ServiceError: Error, Equatable {
     case url(URLError)
     case urlRequest
@@ -21,10 +23,15 @@ enum ServiceError: Error, Equatable {
 }
 
 class API: APIProtocol {
+
+    /// Endpoint for our service
+    /// Get the urls for our endpoint
     enum Endpoint: String {
         private static let baseUrl = URL(string: "http://api.currencylayer.com/")!
+        //access key
         private static let accessKey = "6c16635ecdf56ac38045dded167ee369"
 
+        //live list with all quotes
         case live = "live"
 
         var url: URL {
@@ -38,6 +45,15 @@ class API: APIProtocol {
     static let shared = API()
     let networkActivityPublisher = PassthroughSubject<Bool, Never>()
 
+    /// Get a list of quotes from the live service
+    ///
+    /// - Parameters:
+    ///     - database: if provided saves quotes directly to database
+    ///     - defaults: if provided saves last update date to defaults
+    ///     - force: usually a request can only be performed every 30 min, we can ignore it by force true
+    /// - Returns:
+    ///     - Decoded quotes or an error
+
     func list(_ database: DatabaseSavable? = nil, _ defaults: UserDefaults? = nil, _ force: Bool = false) -> AnyPublisher<CurrencyResponse, Error> {
 
         //check if we are allowed to query
@@ -48,11 +64,15 @@ class API: APIProtocol {
         }
 
         let url = Endpoint.live.url
+
+        //special encoding for timestamp
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
 
         return URLSession.shared.dataTaskPublisher(for: url)
+            //wait for 2 secs on purpose just so we see the loading screen
             .delay(for: 2, scheduler: RunLoop.main)
+            //inform about network activity
             .handleEvents(receiveSubscription: { _ in
                 self.networkActivityPublisher.send(true)
                         }, receiveCompletion: { _ in

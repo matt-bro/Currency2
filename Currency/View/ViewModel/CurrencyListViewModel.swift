@@ -10,18 +10,26 @@ import UIKit
 import Combine
 
 final class CurrencyListVCViewModel {
+
     struct Input {
+        //Amount Input textfield text
         let amountValueText: AnyPublisher<String, Never>
-        let selectedCountry: UIControl.EventPublisher
+        //Opened currency selection
         let selectedCurrency = PassthroughSubject<String, Never>()
+        //Refresh our data
         let refresh: PassthroughSubject<Bool, Never>
     }
 
     struct Output {
+        //Is our input valid
         let isInputValid: AnyPublisher<Bool, Never>
+        //The quotes that we will display in table
         let quotes: AnyPublisher<[QuoteCellViewModel], Never>
+        //after we selected currency
         let currencySelection: AnyPublisher<(String?, Data?), Never>
+        //Last update text
         let metdataText: AnyPublisher<String, Never>
+        //Our loading state
         let loadingState: AnyPublisher<State, Never>
     }
 
@@ -34,11 +42,16 @@ final class CurrencyListVCViewModel {
     private let dependencies: Dependencies
     private var apiNetworkActivitySubscriber: AnyCancellable?
 
+    // watch the change for currency selection, new data, new amount
     @Published private var quotes: [Currency] = []
     @Published private var amount: Double = 1
     @Published private var quote: Double = 1
+
+    //Date of our data
     @Published private var metadataDate: Date?
+    //Network loading state
     @Published private var loadingState: State = .finished
+    //Our initial currency is USD
     @Published var currency: String = "USD"
 
     init(dependencies: Dependencies) {
@@ -97,18 +110,9 @@ final class CurrencyListVCViewModel {
             return (q?.country, q?.image)
         }).eraseToAnyPublisher()
 
-//        self.dependencies.api.list(Database.shared, UserDefaults.standard)
-//            .subscribe(on: DispatchQueue.main)
-//            .sink(receiveCompletion: { _ in }, receiveValue: { [unowned self] _ in
-//                self.quotes = dependencies.db.getQuotes()
-//                self.metadataDate = UserDefaults.standard.lastMetaDataDate
-//            }).store(in: &subscriptions)
-
-
         let metadataText = $metadataDate.map({
             String("\("currency.data".ll) \($0?.string ?? "")")
         }).eraseToAnyPublisher()
-
 
         input.refresh.map({ force -> AnyPublisher<CurrencyResponse, Error>  in
             self.loadingState = .loading
@@ -139,6 +143,7 @@ final class CurrencyListVCViewModel {
         return Output(isInputValid: isInputValid, quotes: quotes, currencySelection: currencySelection, metdataText: metadataText, loadingState: loadingState)
     }
 
+    // This is our network state which we use to display an error text or loading indicator
     enum State {
         case loading
         case finished

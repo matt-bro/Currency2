@@ -36,6 +36,7 @@ class Database: DatabaseReadable, DatabaseSavable {
 
     static let shared = Database()
 
+    ///Initially fills our database with a local json
     func inititalSetup() {
         let  jsonPath = Bundle.main.path(forResource: "initial-data", ofType: "json")
 
@@ -55,6 +56,7 @@ class Database: DatabaseReadable, DatabaseSavable {
         }
     }
 
+    ///Save our quotes to database
     func saveQuotes(quotes:[String: Double]) {
         //I don't want to check for update/insert so I delete all entries before
         self.deleteAllQuotes()
@@ -80,6 +82,7 @@ class Database: DatabaseReadable, DatabaseSavable {
         self.saveContext()
     }
 
+    ///Deletes all quotes in database
     func deleteAllQuotes() {
         let context = self.persistentContainer.viewContext
         let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Currency")
@@ -93,8 +96,8 @@ class Database: DatabaseReadable, DatabaseSavable {
         }
     }
 
-    //It would be nice to see also the currency symbol
-    //we try to figure it out by taking the currency code e.g. USD, JPY
+    ///It would be nice to see also the currency symbol
+    ///we try to figure it out by taking the currency code e.g. USD, JPY
     func getSymbol(forCurrencyCode code: String) -> String? {
         let locale = NSLocale(localeIdentifier: code)
         if locale.displayName(forKey: .currencySymbol, value: code) == code {
@@ -104,14 +107,15 @@ class Database: DatabaseReadable, DatabaseSavable {
         return locale.displayName(forKey: .currencySymbol, value: code)
     }
 
-    //we go the extra way and try to display an image for the currency/country/region
-    //we display a not found image in case there we have no image
+    ///we go the extra way and try to display an image for the currency/country/region
+    ///we display a not found image in case there we have no image
     func getCountryImage(forCurrencyCode code: String?) -> UIImage? {
         let notfound = UIImage(named: "notfound")
         guard let code = code, !code.isEmpty else { return notfound }
         return UIImage(named: code.lowercased()) ?? notfound
     }
 
+    ///Return all quotes sorted by country
     func getQuotes() -> [Currency] {
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Currency")
         let sort = NSSortDescriptor(key: "country", ascending: true)

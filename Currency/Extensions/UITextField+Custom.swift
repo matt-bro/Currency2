@@ -10,6 +10,7 @@ import UIKit
 import Combine
 
 extension UITextField {
+    //Publisher for textfield
     func textPublisher() -> AnyPublisher<String, Never> {
         NotificationCenter.default
             .publisher(for: UITextField.textDidChangeNotification, object: self)

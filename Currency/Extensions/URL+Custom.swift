@@ -8,9 +8,11 @@
 import Foundation
 
 extension URL {
+    ///easiliy append key to url
     func appendAccesKey(key: String) -> URL {
         return self.appending("access_key", value: key)
     }
+    ///append query items to url
     func appending(_ queryItem: String, value: String?) -> URL {
         guard var urlComponents = URLComponents(string: absoluteString) else { return absoluteURL }
         var queryItems: [URLQueryItem] = urlComponents.queryItems ??  []

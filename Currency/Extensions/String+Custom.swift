@@ -20,6 +20,7 @@ extension String {
         return String(self[start..<end])
     }
 
+    ///Convert a currency amount string e.g. 30.00 to a double value
     var numberFromString: Double? {
         let formatter = NumberFormatter()
         formatter.locale = Locale.current
@@ -27,7 +28,8 @@ extension String {
         let number = formatter.number(from: self)
         return number?.doubleValue
     }
-    
+
+    //short property to localize strings
     var ll: String {
         return NSLocalizedString(self, comment: "")
     }

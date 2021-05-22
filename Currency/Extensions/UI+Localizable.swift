@@ -6,9 +6,11 @@
 //  Copyright © 2021 Fresenius Netcare GmbH. All rights reserved.
 //
 
-import Foundation
 import UIKit
 
+//Extension for easier localization via storyboards
+
+/// Extend IB to let us localize via strings
 extension UILabel {
     @IBInspectable var localizableText: String? {
         get { return text }
@@ -20,6 +22,7 @@ extension UILabel {
     }
 }
 
+/// Extend IB to let us localize via strings
 extension UIButton {
     @IBInspectable var localizableText: String? {
         get { return nil }

@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import Combine
 
+//Publisher for UIButton and UIControl
 extension UIControl {
     struct EventPublisher: Publisher {
         // Declaring that our publisher doesn't emit any values,

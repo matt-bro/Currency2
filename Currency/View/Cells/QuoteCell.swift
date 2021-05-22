@@ -14,7 +14,7 @@ class QuoteCell: UITableViewCell {
     @IBOutlet var valueLabelContainer: CardView?
     @IBOutlet var iconIV: UIImageView?
 
-    static let identifier = "CurrencyTableViewCell"
+    static let identifier = "QuoteCell"
 
     var viewModel: QuoteCellViewModel? {
         didSet {

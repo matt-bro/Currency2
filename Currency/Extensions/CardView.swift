@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 
 @IBDesignable
+///Make a regular view to a card view via IB
 class CardView: UIView {
 
     @IBInspectable var cornerRadius: CGFloat = 2

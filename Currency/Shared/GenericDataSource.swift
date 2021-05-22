@@ -8,12 +8,12 @@
 import Foundation
 import UIKit
 
+///A generic datasource for tableeviews
 class GenericDataSource<CELL : UITableViewCell,T> : NSObject, UITableViewDataSource {
 
     private var cellIdentifier : String!
     var items : [T]!
     var configureCell : (CELL, T) -> () = {_,_ in }
-
 
     init(cellIdentifier : String, items : [T], configureCell : @escaping (CELL, T) -> ()) {
         self.cellIdentifier = cellIdentifier
@@ -26,9 +26,7 @@ class GenericDataSource<CELL : UITableViewCell,T> : NSObject, UITableViewDataSou
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
          let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! CELL
-
         let item = self.items[indexPath.row]
         self.configureCell(cell, item)
         return cell

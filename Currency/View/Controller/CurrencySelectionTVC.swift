@@ -14,7 +14,6 @@ class CurrencySelectionTVC: UITableViewController {
     let viewModel = CurrencySelectionTVCViewModel(dependencies: CurrencySelectionTVCViewModel.Dependencies(db: Database.shared))
 
     @IBOutlet weak var cancelBtn: UIBarButtonItem?
-
     private let cancel = PassthroughSubject<Void, Never>()
     var subscriptions = [AnyCancellable]()
 
@@ -44,17 +43,19 @@ class CurrencySelectionTVC: UITableViewController {
 
     func bindViewModel() {
         let input = CurrencySelectionTVCViewModel.Input(pressedCancel: cancel)
-
         let output = viewModel.transform(input: input)
 
+        //after pressing cancel bar button
         output.pressedCancel.sink(receiveValue: { [unowned self] in
             self.dismiss(animated: true, completion: nil)
         }).store(in: &subscriptions)
 
+        //set quotes directly as this is enough for selection
         self.dataSource?.items = output.quotes
         self.tableView.reloadData()
     }
 
+    // Selection of a cell leads to closing of this screen
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let vm = dataSource?.items[indexPath.row] {
             self.viewModel.didSelectCurrency(code: vm.title!)
