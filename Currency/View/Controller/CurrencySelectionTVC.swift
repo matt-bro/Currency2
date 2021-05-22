@@ -38,7 +38,7 @@ class CurrencySelectionTVC: UITableViewController {
         })
         self.tableView.dataSource = dataSource
 
-        self.tableView.register(UINib(nibName: "CurrencyTableViewCell", bundle: nil), forCellReuseIdentifier: QuoteCell.identifier)
+        self.tableView.register(UINib(nibName: "QuoteCell", bundle: nil), forCellReuseIdentifier: QuoteCell.identifier)
         self.tableView.reloadData()
     }
 

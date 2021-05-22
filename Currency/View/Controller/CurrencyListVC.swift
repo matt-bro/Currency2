@@ -44,7 +44,7 @@ class CurrencyListVC: UIViewController {
     }
 
     func setupTableView() {
-        self.tableView.register(UINib(nibName: "CurrencyTableViewCell", bundle: nil), forCellReuseIdentifier: QuoteCell.identifier)
+        self.tableView.register(UINib(nibName: "QuoteCell", bundle: nil), forCellReuseIdentifier: QuoteCell.identifier)
         self.tableView.rowHeight = 70.0
 
         self.dataSource = GenericDataSource<QuoteCell, QuoteCellViewModel>(cellIdentifier: QuoteCell.identifier, items: [], configureCell: { cell, vm in
