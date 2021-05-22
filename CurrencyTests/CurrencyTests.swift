@@ -33,21 +33,21 @@ class CurrencyTests: XCTestCase {
     func testStringConversion() throws {
         var textInput = "10"
         var target = 10.0
-        var convertedVal = InputConverter.numberFromString(string: textInput)
+        var convertedVal = textInput.numberFromString
         XCTAssertNotNil(convertedVal)
         XCTAssert(target == convertedVal!)
 
-        convertedVal = InputConverter.numberFromString(string: textInput)
+        convertedVal = textInput.numberFromString
         textInput = "3487"
         target = 3487
         XCTAssertNotNil(convertedVal)
         XCTAssert(target == convertedVal!)
 
         let weirdInput = ",,,213.."
-        XCTAssertNil(InputConverter.numberFromString(string: weirdInput))
+        XCTAssertNil(weirdInput.numberFromString)
 
         let noInput:String? = nil
-        XCTAssertNil(InputConverter.numberFromString(string: noInput))
+        XCTAssertNil(noInput?.numberFromString)
     }
 
     func testQuoteConversion() throws {

@@ -30,10 +30,9 @@ class CurrencyListVCViewModelTests: XCTestCase {
         let dependencies = CurrencyListVCViewModel.Dependencies(api: API.shared, db: Database.shared)
         let vm =  CurrencyListVCViewModel(dependencies: dependencies)
 
-        let selectedCountry = UIButton().tapPublisher
         let refresh = PassthroughSubject<Bool, Never>()
 
-        let input = CurrencyListVCViewModel.Input(amountValueText: textInputPublisher, selectedCountry: selectedCountry, refresh: refresh)
+        let input = CurrencyListVCViewModel.Input(amountValueText: textInputPublisher, refresh: refresh)
         let output = vm.transform(input: input)
 
         let refreshSuccess = self.expectation(description: "refresh triggered")
