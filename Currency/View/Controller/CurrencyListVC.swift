@@ -28,8 +28,8 @@ class CurrencyListVC: UIViewController {
     private let pressedCurrencySelection = PassthroughSubject<Void, Never>()
     private let refresh = PassthroughSubject<Bool, Never>()
 
-    var viewModel = CurrencyViewModel(dependencies: CurrencyViewModel.Dependencies(api: API.shared, db: Database.shared))
-    var dataSource: GenericDataSource<CurrencyTableViewCell, QuoteCellViewModel>?
+    var viewModel = CurrencyListVCViewModel(dependencies: CurrencyListVCViewModel.Dependencies(api: API.shared, db: Database.shared))
+    var dataSource: GenericDataSource<QuoteCell, QuoteCellViewModel>?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,10 +44,10 @@ class CurrencyListVC: UIViewController {
     }
 
     func setupTableView() {
-        self.tableView.register(UINib(nibName: "CurrencyTableViewCell", bundle: nil), forCellReuseIdentifier: CurrencyTableViewCell.identifier)
+        self.tableView.register(UINib(nibName: "CurrencyTableViewCell", bundle: nil), forCellReuseIdentifier: QuoteCell.identifier)
         self.tableView.rowHeight = 70.0
 
-        self.dataSource = GenericDataSource<CurrencyTableViewCell, QuoteCellViewModel>(cellIdentifier: CurrencyTableViewCell.identifier, items: [], configureCell: { cell, vm in
+        self.dataSource = GenericDataSource<QuoteCell, QuoteCellViewModel>(cellIdentifier: QuoteCell.identifier, items: [], configureCell: { cell, vm in
             cell.viewModel = vm
         })
         self.tableView.dataSource = dataSource
@@ -56,7 +56,7 @@ class CurrencyListVC: UIViewController {
 
 
     func bindViewModel() {
-        let output = self.viewModel.transform(input: CurrencyViewModel.Input(amountValueText: self.inputTf.textPublisher(), selectedCountry: self.selectCurrencyBtn.tapPublisher, refresh: refresh))
+        let output = self.viewModel.transform(input: CurrencyListVCViewModel.Input(amountValueText: self.inputTf.textPublisher(), selectedCountry: self.selectCurrencyBtn.tapPublisher, refresh: refresh))
 
         //mark the textfield for invalid input
         output.isInputValid.sink(receiveValue: { isValid in

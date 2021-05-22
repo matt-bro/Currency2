@@ -10,7 +10,7 @@ import Foundation
 extension Date {
     var string: String {
         let formatter = DateFormatter()
-        formatter.dateStyle = .medium
+        formatter.dateStyle = .long
         formatter.timeStyle = .none
         formatter.locale = Locale.current
         let dateString = formatter.string(from: self)

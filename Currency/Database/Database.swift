@@ -23,7 +23,6 @@
 import Foundation
 import UIKit
 import CoreData
-import MapKit
 
 protocol DatabaseReadable {
     func getQuotes() -> [Currency] 
@@ -45,12 +44,14 @@ class Database: DatabaseReadable, DatabaseSavable {
         }
 
         do {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .secondsSince1970
             let data = try Data(contentsOf: URL(fileURLWithPath: jsonPath!), options: .mappedIfSafe)
-            let jsonResult = try JSONDecoder().decode(CurrencyResponse.self, from: data)
+            let jsonResult = try decoder.decode(CurrencyResponse.self, from: data)
             UserDefaults.standard.lastMetaDataDate = jsonResult.timestamp
             self.saveQuotes(quotes: jsonResult.quotes)
         } catch {
-            // handle error
+            fatalError("could not setup database")
         }
     }
 
@@ -75,13 +76,12 @@ class Database: DatabaseReadable, DatabaseSavable {
             e.value = quote.value
             e.sign = getSymbol(forCurrencyCode: e.country ?? "") ?? ""
             e.image = getCountryImage(forCurrencyCode: e.country)?.pngData()
-            
-            self.saveContext()
         }
+        self.saveContext()
     }
 
     func deleteAllQuotes() {
-        let context = ( UIApplication.shared.delegate as! AppDelegate ).persistentContainer.viewContext
+        let context = self.persistentContainer.viewContext
         let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Currency")
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
         do {

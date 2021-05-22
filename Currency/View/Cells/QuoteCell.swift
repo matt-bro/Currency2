@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CurrencyTableViewCell: UITableViewCell {
+class QuoteCell: UITableViewCell {
     
     @IBOutlet var titleLabel: UILabel?
     @IBOutlet var valueLabel: UILabel?

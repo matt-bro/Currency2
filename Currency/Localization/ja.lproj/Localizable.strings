@@ -2,3 +2,6 @@
 "cancel" = "キャンセル";
 "selection.title" = "洗濯";
 "currency.data" = "最後の更新";
+"loading" = "データの読み込み";
+"tryagain" = "再試行";
+"loading.error" = "エラー";

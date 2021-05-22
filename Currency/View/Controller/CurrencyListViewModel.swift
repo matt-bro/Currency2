@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import Combine
 
-final class CurrencyViewModel {
+final class CurrencyListVCViewModel {
     struct Input {
         let amountValueText: AnyPublisher<String, Never>
         let selectedCountry: UIControl.EventPublisher
@@ -27,7 +27,7 @@ final class CurrencyViewModel {
 
     struct Dependencies {
         let api: APIProtocol
-        let db: DatabaseReadable
+        let db: Database
     }
 
     private var subscriptions = Set<AnyCancellable>()
@@ -74,7 +74,7 @@ final class CurrencyViewModel {
         //any change in amount, quote or the quotes array will lead to a recalculation
         let quotes = Publishers.CombineLatest3($amount, $quotes, $quote).map({ amount, quotes, quote in
             quotes.map({
-                QuoteCellViewModel(code: $0.id ?? "", title: $0.country, image: $0.image, value: $0.value * Converter.toUSD(amount: amount, quote: quote), sign: $0.sign)
+                QuoteCellViewModel(code: $0.id ?? "", title: $0.country, image: $0.image, value: Converter.fromUSDToOther(amount: Converter.toUSD(amount: amount, quote: quote), targetQuote: $0.value) , sign: $0.sign)
             })
         }).eraseToAnyPublisher()
 
@@ -84,8 +84,6 @@ final class CurrencyViewModel {
                         quote in quote.country! == value
             }).first?.value ?? 1
         }).store(in: &subscriptions)
-
-
 
         input.selectedCurrency
             .assign(to: \.currency, on: self)
@@ -114,7 +112,7 @@ final class CurrencyViewModel {
 
         input.refresh.map({ force -> AnyPublisher<CurrencyResponse, Error>  in
             self.loadingState = .loading
-            return self.dependencies.api.list(Database.shared, UserDefaults.standard, force)
+            return self.dependencies.api.list(self.dependencies.db, UserDefaults.standard, force)
         })
         .switchToLatest()
         .sink(receiveCompletion: { [weak self] completion in

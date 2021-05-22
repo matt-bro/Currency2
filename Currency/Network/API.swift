@@ -48,6 +48,9 @@ class API: APIProtocol {
         }
 
         let url = Endpoint.live.url
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+
         return URLSession.shared.dataTaskPublisher(for: url)
             .delay(for: 2, scheduler: RunLoop.main)
             .handleEvents(receiveSubscription: { _ in
@@ -63,7 +66,7 @@ class API: APIProtocol {
                 }
                 return output.data
             }
-            .decode(type: CurrencyResponse.self, decoder: JSONDecoder())
+            .decode(type: CurrencyResponse.self, decoder: decoder)
             .handleEvents(receiveOutput: {
                 database?.saveQuotes(quotes: $0.quotes)
                 defaults?.lastMetaDataDate = $0.timestamp

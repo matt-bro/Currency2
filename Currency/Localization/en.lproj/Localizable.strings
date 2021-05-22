@@ -2,3 +2,6 @@
 "cancel" = "Cancel";
 "selection.title" = "Select currency";
 "currency.data" = "Last update: ";
+"loading" = "Loading data";
+"tryagain" = "Try again";
+"loading.error" = "Loading error";

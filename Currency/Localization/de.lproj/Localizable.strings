@@ -1,4 +1,7 @@
 "main.title" = "Währungsrechner";
 "cancel" = "Abbrechen";
 "selection.title" = "Währung auswählen";
-"currency.data" = "Letzte Aktualisierung: ";
+"currency.data" = "Letztes Update: ";
+"loading" = "Lade Daten...";
+"tryagain" = "Erneut laden";
+"loading.error" = "Fehler";
