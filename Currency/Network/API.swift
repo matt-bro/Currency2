@@ -28,7 +28,7 @@ class API: APIProtocol {
     enum Endpoint: String {
         private static let baseUrl = URL(string: "http://api.currencylayer.com/")!
         //access key
-        private static let accessKey = "6c16635ecdf56ac38045dded167ee369"
+        private static let accessKey = "insert access key here"
 
         //live list with all quotes
         case live = "live"
