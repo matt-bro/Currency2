@@ -1,5 +1,11 @@
 # Currency Converter
 
+<p align="center">
+<img src="https://raw.githubusercontent.com/matt-bro/Currency2/master/Screenshots/1.png" width="225" height="400">
+<img src="https://raw.githubusercontent.com/matt-bro/Currency2/master/Screenshots/2.png" width="225" height="400">
+<img src="https://raw.githubusercontent.com/matt-bro/Currency2/master/Screenshots/5.png" width="225" height="400">
+</p>
+
 ### Description
 This is a simple currency converter to test combine with uikit and mvvm.
 It uses a currency api from currencylayer.com
